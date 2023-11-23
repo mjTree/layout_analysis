@@ -1,0 +1,3 @@
+# coding:utf-8
+
+DEFAULT_ELEMENT_PRIORITY = 10
