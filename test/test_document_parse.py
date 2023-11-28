@@ -8,11 +8,14 @@ from layout_analysis.document_structure.document import Document
 class TestDocumentParse(unittest.TestCase):
 
     def setUp(self):
-        ...
+        self.pdf_parse: PdfParse = PdfParse('***.pdf')
 
     def test_pdfminer_parse(self):
-        pdf_parse: PdfParse = PdfParse('***.pdf')
-        document: Document = pdf_parse.gen_document_by_pdfminer()
+        document: Document = self.pdf_parse.gen_document_by_pdfminer()
+        self.assertTrue(len(document.page_list) > 0)
+
+    def test_pymupdf_parse(self):
+        document: Document = self.pdf_parse.gen_document_by_pdfminer()
         self.assertTrue(len(document.page_list) > 0)
 
     def tearDown(self):

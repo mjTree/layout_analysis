@@ -1,2 +1,2 @@
-pymupdf==1.19.6
+pymupdf==1.22.0
 pdfminer.six==20221105

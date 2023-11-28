@@ -1,4 +1,5 @@
 # coding:utf-8
+import fitz
 from fitz.fitz import Document as MupdfDocument
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTChar, LTTextBoxHorizontal
@@ -47,9 +48,31 @@ class PdfParse:
     def gen_document_by_pymupdf(self):
         page_list = []
         mupdf_document = MupdfDocument(self.parse_pdf_path)
-        for mupdf_page in mupdf_document:
-            element_list = []
-            # TODO: 待实现
-            page = Page(mupdf_page.rect.width, mupdf_page.rect.height, mupdf_page.number, element_list)
+        for page_idx, mupdf_page in enumerate(mupdf_document):
+            page = Page(mupdf_page.rect.width, mupdf_page.rect.height, page_idx + 1, [])
+            raw_dict = page.get_text(option='rawdict', flags=fitz.TEXT_PRESERVE_IMAGES)
+            for block in raw_dict['blocks']:
+                if block['type'] != 0:
+                    continue
+                for line in block['lines']:
+                    for span in line['spans']:
+                        text_range_chars = []
+                        for char in span['chars']:
+                            x1, y1, x2, y2 = char['bbox']
+                            width, height = x2 - x1, y2 - y1
+                            # color = span['color']
+                            if x1 >= 0 and y1 >= 0 and width > 0 and height > 0:
+                                text_range_chars.append(Character(
+                                    round(x1, 2),
+                                    round(y1, 2),
+                                    round(width, 2),
+                                    round(height, 2),
+                                    page_idx + 1,
+                                    char['c'],
+                                    span['font'],
+                                ))
+                        if text_range_chars:
+                            text_range = TextRange(text_range_chars)
+                            page.element_list.append(PageParagraph(page, [text_range], priority=10))
             page_list.append(page)
         return Document(page_list)
