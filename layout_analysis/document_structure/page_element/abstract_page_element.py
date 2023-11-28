@@ -28,6 +28,10 @@ class AbstractPageElement(Range):
         self.priority = priority
         self.element_id = element_id or str(uuid.uuid4())
 
+    @property
+    def content(self):
+        return ''.join([text_range.content for text_range in self.text_range_list])
+
     @staticmethod
     def get_page_element_region(text_range_list):
         x, y, width, height = 0, 0, 0, 0
@@ -50,3 +54,6 @@ class AbstractPageElement(Range):
     @classmethod
     def deserialization(cls, resource):
         pass
+
+    def __str__(self):
+        return self.content

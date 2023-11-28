@@ -16,9 +16,16 @@ class TextRange(Range):
         Range.__init__(self, x, y, width, height)
         self.character_list = character_list
 
+    @property
+    def content(self):
+        return ''.join([character.char for character in self.character_list])
+
     def serialization(self, resource):
         pass
 
     @classmethod
     def deserialization(cls, resource):
         pass
+
+    def __str__(self):
+        return self.content

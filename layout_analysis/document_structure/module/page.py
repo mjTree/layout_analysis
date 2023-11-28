@@ -9,6 +9,10 @@ class Page(Range):
         self.page_num = page_num
         self.element_list = element_list or []
 
+    @property
+    def content(self):
+        return ''.join([element.content for element in self.element_list])
+
     def serialization(self, resource):
         pass
 
